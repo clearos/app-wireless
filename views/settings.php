@@ -57,7 +57,7 @@ if ($form_type === 'edit') {
 // Form
 ///////////////////////////////////////////////////////////////////////////////
 
-echo form_open('wireless/settings/edit');
+echo form_open('wireless/settings/edit', array('autocomplete' => 'off'));
 echo form_header(lang('base_settings'));
 
 echo field_dropdown('mode', $modes, $mode, lang('wireless_mode'), $read_only);

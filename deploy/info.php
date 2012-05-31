@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'wireless';
-$app['version'] = '1.0.2';
+$app['version'] = '1.1.0';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -44,7 +44,9 @@ $app['requires'] = array(
 $app['core_requires'] = array(
     'app-network-core',
     'app-incoming-firewall-core',
+    'app-radius-core',
     'hostapd',
+    'openssl',
 );
 
 $app['core_directory_manifest'] = array(

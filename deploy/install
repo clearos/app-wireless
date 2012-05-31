@@ -1,0 +1,25 @@
+#!/bin/sh
+
+TIMESTAMP=`date "+%b-%d-%Y-%T"`
+
+# Set default configuration
+#--------------------------
+
+logger -p local6.notice -t installer "app-wireless-core - setting default configuration"
+
+if [ -e /etc/hostapd/hostapd.conf ]; then
+    cp /etc/hostapd/hostapd.conf /var/clearos/wireless/backup/hostapd.conf.$TIMESTAMP
+fi
+
+cp /usr/clearos/apps/wireless/deploy/hostapd.conf /etc/hostapd/hostapd.conf
+
+# Set SSID and random password
+#-----------------------------
+
+logger -p local6.notice -t installer "app-wireless-core - creating random password for WPA"
+PASSWORD=`openssl rand -base64 32 | sed 's/\//_/g'`
+SSID=`grep ^name[[:space:]]= /etc/product | sed 's/.*[[:space:]]*=[[:space:]]*//'`
+
+sed -i -e "s/^wpa_passphrase[[:space:]]*=.*/wpa_passphrase = $PASSWORD/" /etc/hostapd/hostapd.conf
+sed -i -e "s/^ssid[[:space:]]*=.*/ssid = $SSID/" /etc/hostapd/hostapd.conf
+

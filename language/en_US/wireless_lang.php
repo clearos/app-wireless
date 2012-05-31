@@ -11,4 +11,4 @@ $lang['wireless_passphrase'] = 'Passphrase';
 $lang['wireless_wpa_infrastructure'] = 'WPA Infrastructure';
 $lang['wireless_wpa_preshared_key'] = 'WPA Pre-shared Key';
 $lang['wireless_recommended'] = 'Recommended';
-
+$lang['wireless_wep'] = 'WEP';

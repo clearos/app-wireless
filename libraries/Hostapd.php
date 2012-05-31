@@ -47,6 +47,7 @@ require_once $bootstrap . '/bootstrap.php';
 ///////////////////////////////////////////////////////////////////////////////
 
 clearos_load_language('wireless');
+clearos_load_language('base');
 
 ///////////////////////////////////////////////////////////////////////////////
 // D E P E N D E N C I E S
@@ -56,14 +57,14 @@ clearos_load_language('wireless');
 //--------
 
 use \clearos\apps\base\Configuration_File as Configuration_File;
-use \clearos\apps\base\Country as Country;
 use \clearos\apps\base\Daemon as Daemon;
 use \clearos\apps\base\File as File;
+use \clearos\apps\radius\FreeRADIUS as FreeRADIUS;
 
 clearos_load_library('base/Configuration_File');
-clearos_load_library('base/Country');
 clearos_load_library('base/Daemon');
 clearos_load_library('base/File');
+clearos_load_library('radius/FreeRADIUS');
 
 // Exceptions
 //-----------
@@ -97,6 +98,8 @@ class Hostapd extends Daemon
     ///////////////////////////////////////////////////////////////////////////////
 
     const FILE_CONFIG = '/etc/hostapd/hostapd.conf';
+    const MODE_WPA_PSK = 'WPA-PSK';
+    const MODE_WPA_EAP = 'WPA-EAP';
 
     ///////////////////////////////////////////////////////////////////////////////
     // V A R I A B L E S
@@ -116,6 +119,8 @@ class Hostapd extends Daemon
     public function __construct()
     {
         clearos_profile(__METHOD__, __LINE__);
+
+        parent::__construct('hostapd');
     }
 
     /**
@@ -153,21 +158,23 @@ class Hostapd extends Daemon
     }
 
     /**
-     * Returns channels.
+     * Returns wireless channels.
      *
-     * @return array channels
+     * @return array wireless channels
      * @throws Engine_Exception
      */
 
     public function get_channels()
     {
         clearos_profile(__METHOD__, __LINE__);
-    
-        // FIXME: just an example - please fix
+
         // Could we scan the network for other APs and flag some as recommend?
+        // If so, add the recommendations on the RHS of hash array
+
         return array(
+            0 => lang('base_automatic'),
             1 => '1',
-            2 => '2 - ' . lang('wireless_recommended'),
+            2 => '2',
             3 => '3',
             4 => '4',
             5 => '5',
@@ -249,9 +256,9 @@ class Hostapd extends Daemon
     }
 
     /**
-     * Returns available modes.
+     * Returns wireless modes.
      *
-     * @return array modes
+     * @return array wireless modes
      * @throws Engine_Exception
      */
 
@@ -260,12 +267,11 @@ class Hostapd extends Daemon
         clearos_profile(__METHOD__, __LINE__);
 
         return array(
-            'WPA-EAP' => lang('wireless_wpa_infrastructure'),
-            'WPA-PSK' => lang('wireless_wpa_preshared_key')
+            self::MODE_WPA_PSK => lang('wireless_wpa_preshared_key'),
+            self::MODE_WPA_EAP => lang('wireless_wpa_infrastructure')
         );
     }
 
-    /**
     /**
      * Returns SSID.
      *
@@ -318,6 +324,135 @@ class Hostapd extends Daemon
     }
 
     /**
+     * Sets channel.
+     *
+     * @param string $channel channel
+     *
+     * @throws Engine_Exception, Validation_Exception
+     */
+
+    public function set_channel($channel)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_channel($channel));
+
+        $this->_set_parameter('channel', $channel);
+    }
+
+    /**
+    /**
+     * Sets IEEE 802.1X authorization state.
+     *
+     * @param boolean $state IEEE 802.1X authorization state.
+     *
+     * @return void
+     * @throws Engine_Exception, Validation_Exception
+     */
+
+    public function set_ieee8021x($state)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $state = ($state) ? '1' : '0';
+
+        $this->_set_parameter('ieee8021x', $state);
+    }
+
+    /**
+     * Sets interface.
+     *
+     * @param string $interface interface
+     *
+     * @throws Engine_Exception, Validation_Exception
+     */
+
+    public function set_interface($interface)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $this->_set_parameter('interface', $interface);
+    }
+
+    /**
+     * Sets mode.
+     *
+     * @param string $mode mode
+     *
+     * @return void
+     * @throws Engine_Exception
+     */
+
+    public function set_mode($mode)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $ieee8021x = $this->get_ieee8021x();
+        $key_management = $this->get_wpa_key_management();
+        $radius_password = 'radius_password'; // FIXME: use random password
+        $nas_identifier = 'wifi_ap';
+
+        // Hostapd
+        //--------
+
+        if ($mode === self::MODE_WPA_EAP) {
+            $this->set_wpa_key_management(self::MODE_WPA_EAP);
+            $this->set_ieee8021x(TRUE);
+
+            // FIXME: is this right?
+            $this->_set_parameter('nas_identifier', $nas_identifier);
+            $this->_set_parameter('auth_server_addr', '127.0.0.1');
+            $this->_set_parameter('auth_server_port', '1812');
+            $this->_set_parameter('acct_server_addr', '127.0.0.1');
+            $this->_set_parameter('acct_server_port', '1813');
+            $this->_set_parameter('eap_server', '0');
+            $this->_set_parameter('auth_server_shared_secret', $radius_password);
+            $this->_set_parameter('acct_server_shared_secret', $radius_password);
+
+        } else {
+            $this->set_wpa_key_management(self::MODE_WPA_PSK);
+            $this->set_ieee8021x(FALSE);
+
+            $this->_set_parameter('nas_identifier', NULL);
+            $this->_set_parameter('auth_server_addr', NULL);
+            $this->_set_parameter('auth_server_port', NULL);
+            $this->_set_parameter('acct_server_addr', NULL);
+            $this->_set_parameter('acct_server_port', NULL);
+            $this->_set_parameter('eap_server', NULL);
+            $this->_set_parameter('auth_server_shared_secret', NULL);
+            $this->_set_parameter('acct_server_shared_secret', NULL);
+        }
+
+        // RADIUS
+        //-------
+
+        $radius = new FreeRADIUS();
+
+        if ($mode === self::MODE_WPA_EAP) {
+            $radius->add_client('127.0.0.1', $radius_password, $nas_identifier);
+
+            if ($radius->get_running_state())
+                $radius->reset();
+            else
+                $radius->set_running_state(TRUE);
+
+            if (! $radius->get_boot_state())
+                $radius->set_boot_state(TRUE);
+        } else {
+            $radius->delete_client('127.0.0.1');
+
+            $radius_clients = $radius->get_clients();
+
+            if (empty($radius_clients)) {
+                $radius->set_running_state(FALSE);
+                $radius->set_boot_state(FALSE);
+            } else {
+                $radius->reset();
+            }
+        }
+    }
+
+    /**
      * Sets SSID.
      *
      * @param string $ssid SSID
@@ -353,9 +488,45 @@ class Hostapd extends Daemon
         $this->_set_parameter('wpa_key_mgmt', $mode);
     }
 
+    /**
+     * Sets WPA passphrase.
+     *
+     * @param string $passphrase passphrase
+     *
+     * @return void
+     * @throws Engine_Exception
+     */
+
+    public function set_wpa_passphrase($passphrase)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_wpa_passphrase($passphrase));
+
+        $this->_set_parameter('wpa_passphrase', $passphrase);
+    }
+
     ///////////////////////////////////////////////////////////////////////////////
     // V A L I D A T I O N   M E T H O D S
     ///////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Validation routine for channel.
+     *
+     * @param integer $channel channel
+     *
+     * @return string error message if channel is invalid
+     */
+
+    public function validate_channel($channel)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $supported = $this->get_channels();
+
+        if (! array_key_exists($channel, $supported))
+            return lang('wireless_channel_invalid');
+    }
 
     /**
      * Validation routine for SSID.
@@ -390,7 +561,19 @@ class Hostapd extends Daemon
             return lang('wireless_mode_invalid');
     }
 
-    ///////////////////////////////////////////////////////////////////////////////
+    /**
+     * Validation routine for WPA passphrase.
+     *
+     * @param string $passphrase passphrase
+     *
+     * @return string error message if WPA passphrase is invalid
+     */
+
+    public function validate_wpa_passphrase($passphrase)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+    }
+
 
     ///////////////////////////////////////////////////////////////////////////////
     // P R I V A T E  M E T H O D S 
@@ -437,12 +620,13 @@ class Hostapd extends Daemon
 
         $file = new File(self::FILE_CONFIG);
 
-        if (! $file->exists())
-            $file->create("root", "root", "0644"); 
+        if ($value === NULL) {
+            $file->delete_lines("/^$key\s*=\s*/");
+        } else {
+            $match = $file->replace_lines("/^$key\s*=\s*/", "$key=$value\n");
 
-        $match = $file->replace_lines("/^$key\s*=\s*/", "$key = $value\n");
-
-        if (!$match)
-            $file->add_lines("$key = $value\n");
+            if (!$match)
+                $file->add_lines("$key = $value\n");
+        }
     }
 }

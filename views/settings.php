@@ -66,7 +66,8 @@ echo field_password('passphrase', $passphrase, lang('wireless_passphrase'), $rea
 echo field_simple_dropdown('channel', $channels, $channel, lang('wireless_channel'), $read_only);
 // echo field_dropdown('bridge', $bridges, $bridge, lang('wireless_bridge'), $read_only);
 
-echo field_button_set($buttons);
+// FIXME
+// echo field_button_set($buttons);
 
 echo form_footer();
 echo form_close();

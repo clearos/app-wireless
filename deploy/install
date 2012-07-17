@@ -20,6 +20,6 @@ logger -p local6.notice -t installer "app-wireless-core - creating random passwo
 PASSWORD=`openssl rand -base64 32 | sed 's/\//_/g'`
 SSID=`grep ^name[[:space:]]= /etc/product | sed 's/.*[[:space:]]*=[[:space:]]*//'`
 
-sed -i -e "s/^wpa_passphrase[[:space:]]*=.*/wpa_passphrase = $PASSWORD/" /etc/hostapd/hostapd.conf
-sed -i -e "s/^ssid[[:space:]]*=.*/ssid = $SSID/" /etc/hostapd/hostapd.conf
+sed -i -e "s/^wpa_passphrase[[:space:]]*=.*/wpa_passphrase=$PASSWORD/" /etc/hostapd/hostapd.conf
+sed -i -e "s/^ssid[[:space:]]*=.*/ssid=$SSID/" /etc/hostapd/hostapd.conf
 

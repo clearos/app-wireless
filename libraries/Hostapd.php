@@ -328,6 +328,7 @@ class Hostapd extends Daemon
      *
      * @param string $channel channel
      *
+     * @return void
      * @throws Engine_Exception, Validation_Exception
      */
 
@@ -340,7 +341,6 @@ class Hostapd extends Daemon
         $this->_set_parameter('channel', $channel);
     }
 
-    /**
     /**
      * Sets IEEE 802.1X authorization state.
      *
@@ -364,6 +364,7 @@ class Hostapd extends Daemon
      *
      * @param string $interface interface
      *
+     * @return void
      * @throws Engine_Exception, Validation_Exception
      */
 

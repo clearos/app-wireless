@@ -1,7 +1,7 @@
 
 Name: app-wireless
 Epoch: 1
-Version: 1.2.4
+Version: 1.4.0
 Release: 1%{dist}
 Summary: Wireless Access Point
 License: GPLv3
@@ -17,7 +17,7 @@ Requires: app-users
 Requires: app-network
 
 %description
-Wireless Access Point description...
+The Wireless Access Point app provides the engine for configuring and managning wireless network interfaces on the system.
 
 %package core
 Summary: Wireless Access Point - Core
@@ -31,7 +31,7 @@ Requires: hostapd
 Requires: openssl
 
 %description core
-Wireless Access Point description...
+The Wireless Access Point app provides the engine for configuring and managning wireless network interfaces on the system.
 
 This package provides the core API and libraries.
 

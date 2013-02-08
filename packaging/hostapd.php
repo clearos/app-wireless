@@ -21,7 +21,6 @@ $configlet = array(
 	'title' => lang('wireless_app_name'),
 	'package' => 'hostapd',
 	'process_name' => 'hostapd',
-	'pid_file' => '/var/run/hostapd.pid',
 	'reloadable' => FALSE,
 	'url' => '/app/wireless'
 );

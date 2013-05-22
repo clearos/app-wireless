@@ -3,9 +3,9 @@
 /**
  * Hostapd settings controller.
  *
- * @category   Apps
- * @package    Wireless
- * @subpackage Controllers
+ * @category   apps
+ * @package    wireless
+ * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
@@ -36,9 +36,9 @@
 /**
  * Hostapd settings controller.
  *
- * @category   Apps
- * @package    Wireless
- * @subpackage Controllers
+ * @category   apps
+ * @package    wireless
+ * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later

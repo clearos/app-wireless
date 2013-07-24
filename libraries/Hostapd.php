@@ -137,7 +137,9 @@ class Hostapd extends Daemon
         if (! $this->is_loaded)
             $this->_load_config();
 
-        return $this->config['bridge'];
+        $bridge = empty($this->config['bridge']) ? '' : $this->config['bridge'];
+
+        return $bridge;
     }
 
     /**
@@ -154,7 +156,9 @@ class Hostapd extends Daemon
         if (! $this->is_loaded)
             $this->_load_config();
 
-        return $this->config['channel'];
+        $channel = empty($this->config['channel']) ? '' : $this->config['channel'];
+
+        return $channel;
     }
 
     /**
@@ -205,7 +209,9 @@ class Hostapd extends Daemon
         if (! $this->is_loaded)
             $this->_load_config();
 
-        return $this->config['ieee8021x'];
+        $ieee8021x = empty($this->config['ieee8021x']) ? '' : $this->config['ieee8021x'];
+
+        return $ieee8021x;
     }
 
     /**
@@ -222,7 +228,9 @@ class Hostapd extends Daemon
         if (! $this->is_loaded)
             $this->_load_config();
 
-        return $this->config['interface'];
+        $interface = empty($this->config['interface']) ? '' : $this->config['interface'];
+
+        return $interface;
     }
 
     /**
@@ -286,7 +294,9 @@ class Hostapd extends Daemon
         if (! $this->is_loaded)
             $this->_load_config();
 
-        return $this->config['ssid'];
+        $ssid = empty($this->config['ssid']) ? '' : $this->config['ssid'];
+
+        return $ssid;
     }
 
     /**
@@ -303,7 +313,9 @@ class Hostapd extends Daemon
         if (! $this->is_loaded)
             $this->_load_config();
 
-        return $this->config['wpa_key_mgmt'];
+        $wpa_key_mgmt = empty($this->config['wpa_key_mgmt']) ? '' : $this->config['wpa_key_mgmt'];
+
+        return $wpa_key_mgmt;
     }
 
     /**
@@ -320,7 +332,9 @@ class Hostapd extends Daemon
         if (! $this->is_loaded)
             $this->_load_config();
 
-        return $this->config['wpa_passphrase'];
+        $wpa_passphrase = empty($this->config['wpa_passphrase']) ? '' : $this->config['wpa_passphrase'];
+
+        return $wpa_passphrase;
     }
 
     /**

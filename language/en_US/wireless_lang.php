@@ -1,6 +1,6 @@
 <?php
 
-$lang['wireless_app_description'] = 'The Wireless Access Point app provides the engine for configuring and managning wireless network interfaces on the system.';
+$lang['wireless_app_description'] = 'The Wireless Access Point app provides the engine for configuring and managing wireless network interfaces on the system.';
 $lang['wireless_app_name'] = 'Wireless Access Point';
 $lang['wireless_bridge'] = 'Bridge';
 $lang['wireless_channel'] = 'Channel';

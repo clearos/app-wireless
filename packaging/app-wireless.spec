@@ -77,13 +77,11 @@ exit 0
 %files
 %defattr(-,root,root)
 /usr/clearos/apps/wireless/controllers
-/usr/clearos/apps/wireless/htdocs
 /usr/clearos/apps/wireless/views
 
 %files core
 %defattr(-,root,root)
 %exclude /usr/clearos/apps/wireless/packaging
-%exclude /usr/clearos/apps/wireless/tests
 %dir /usr/clearos/apps/wireless
 %dir /var/clearos/wireless
 %dir /var/clearos/wireless/backup

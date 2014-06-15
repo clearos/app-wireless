@@ -31,7 +31,7 @@ Requires: hostapd
 Requires: openssl
 
 %description core
-The Wireless Access Point app provides the engine for configuring and managning wireless network interfaces on the system.
+The Wireless Access Point app provides the engine for configuring and managing wireless network interfaces on the system.
 
 This package provides the core API and libraries.
 

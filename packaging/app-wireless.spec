@@ -1,7 +1,7 @@
 
 Name: app-wireless
 Epoch: 1
-Version: 1.5.0
+Version: 1.6.5
 Release: 1%{dist}
 Summary: Wireless Access Point
 License: GPLv3

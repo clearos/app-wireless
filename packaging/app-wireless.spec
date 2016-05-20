@@ -1,7 +1,7 @@
 
 Name: app-wireless
 Epoch: 1
-Version: 1.6.5
+Version: 1.6.6
 Release: 1%{dist}
 Summary: Wireless Access Point
 License: GPLv3
@@ -77,6 +77,7 @@ exit 0
 %files
 %defattr(-,root,root)
 /usr/clearos/apps/wireless/controllers
+/usr/clearos/apps/wireless/htdocs
 /usr/clearos/apps/wireless/views
 
 %files core

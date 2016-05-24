@@ -57,17 +57,23 @@ if ($form_type === 'edit') {
 // Form
 ///////////////////////////////////////////////////////////////////////////////
 
-echo form_open('wireless/settings/edit', array('autocomplete' => 'off'));
+//echo form_open('wireless/settings/edit', array('autocomplete' => 'off'));
+echo form_open('wireless/settings/edit');
 echo form_header(lang('base_settings'));
 
 echo field_dropdown('mode', $modes, $mode, lang('wireless_mode'), $read_only);
 echo field_input('ssid', $ssid, lang('wireless_ssid'), $read_only);
-echo field_password('passphrase', $passphrase, lang('wireless_passphrase'), $read_only);
+if ($mode === 'WPA-PSK') {
+    echo field_password('passphrase', $passphrase, lang('wireless_passphrase'), $read_only);
+} else {
+    echo field_password('passphrase', $passphrase, lang('wireless_radius_secret'), $read_only);
+}
+//echo field_password('passphrase', $passphrase, lang('wireless_passphrase'), $read_only);
 echo field_simple_dropdown('channel', $channels, $channel, lang('wireless_channel'), $read_only);
 // echo field_dropdown('bridge', $bridges, $bridge, lang('wireless_bridge'), $read_only);
 
 // FIXME
-// echo field_button_set($buttons);
+echo field_button_set($buttons);
 
 echo form_footer();
 echo form_close();

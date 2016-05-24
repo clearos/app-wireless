@@ -157,6 +157,9 @@ class Hostapd extends Daemon
             $this->_load_config();
 
         $channel = empty($this->config['channel']) ? '' : $this->config['channel'];
+	// Turn on automatic with N configuration
+	//if ($channel == "")
+	//    $channel = lang('base_automatic');
 
         return $channel;
     }
@@ -174,9 +177,11 @@ class Hostapd extends Daemon
 
         // Could we scan the network for other APs and flag some as recommend?
         // If so, add the recommendations on the RHS of hash array
+	// The automatic value of 0 does this for certain wireless implementations (see Wireless N)
 
         return array(
-            0 => lang('base_automatic'),
+	    // Turn on automatic channel support with N configuration
+            //0 => lang('base_automatic'),
             1 => '1',
             2 => '2',
             3 => '3',
@@ -349,6 +354,10 @@ class Hostapd extends Daemon
     public function set_channel($channel)
     {
         clearos_profile(__METHOD__, __LINE__);
+	
+	//Turn on automatic channel with N configuration
+	//if ($channel == lang('base_automatic'))
+	//    $channel = "0";
 
         Validation_Exception::is_valid($this->validate_channel($channel));
 
@@ -404,7 +413,8 @@ class Hostapd extends Daemon
 
         $ieee8021x = $this->get_ieee8021x();
         $key_management = $this->get_wpa_key_management();
-        $radius_password = 'radius_password'; // FIXME: use random password
+//        $radius_password = "radius_password"; // FIXME: use random password
+        $radius_password = $this->get_wpa_passphrase(); 
         $nas_identifier = 'wifi_ap';
 
         // Hostapd
@@ -441,28 +451,29 @@ class Hostapd extends Daemon
         // RADIUS
         //-------
 
-        $radius = new FreeRADIUS();
+        $radiusd = new FreeRADIUS();
 
         if ($mode === self::MODE_WPA_EAP) {
-            $radius->add_client('127.0.0.1', $radius_password, $nas_identifier);
+            $radiusd->add_client('127.0.0.1', $radius_password, $nas_identifier);
 
-            if ($radius->get_running_state())
-                $radius->reset();
-            else
-                $radius->set_running_state(TRUE);
+            if ($radiusd->get_running_state())
+                $radiusd->reset();
+	//Interact with local RADIUS
+        //    else
+        //        $radiusd->set_running_state(TRUE);
 
-            if (! $radius->get_boot_state())
-                $radius->set_boot_state(TRUE);
+            if (! $radiusd->get_boot_state())
+                $radiusd->set_boot_state(TRUE);
         } else {
-            $radius->delete_client('127.0.0.1');
+            $radiusd->delete_client('127.0.0.1');
 
-            $radius_clients = $radius->get_clients();
+            $radius_clients = $radiusd->get_clients();
 
             if (empty($radius_clients)) {
-                $radius->set_running_state(FALSE);
-                $radius->set_boot_state(FALSE);
+                $radiusd->set_running_state(FALSE);
+                $radiusd->set_boot_state(FALSE);
             } else {
-                $radius->reset();
+                $radiusd->reset();
             }
         }
     }
@@ -539,8 +550,8 @@ class Hostapd extends Daemon
 
         $supported = $this->get_channels();
 
-        if (! array_key_exists($channel, $supported))
-            return lang('wireless_channel_invalid');
+        //if (! array_key_exists($channel, $supported))
+        //    return lang('wireless_channel_invalid');
     }
 
     /**
@@ -555,8 +566,8 @@ class Hostapd extends Daemon
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        // FIXME - what's really valid here?
-        if (preg_match("/([:;\/#!@])/", $ssid))
+        // REGEX match for UTF8 (See http://standards.ieee.org/getieee802/download/802.11-2012.pdf)
+        if (!preg_match("/^[\\s,\\d,\\p{L}]{0,32}$/u", $ssid))
             return lang('wireless_ssid_invalid');
     }
 
@@ -587,6 +598,10 @@ class Hostapd extends Daemon
     public function validate_wpa_passphrase($passphrase)
     {
         clearos_profile(__METHOD__, __LINE__);
+
+	// REGEX match for printable ASCII characters 8-63 
+	if (!preg_match("/^[\\x00-\\x7F]{8,63}$/u", $passphrase))
+            return lang('wireless_passphrase_invalid');
     }
 
 

@@ -100,7 +100,9 @@ class Settings extends ClearOS_Controller
         //---------------------
          
         $this->form_validation->set_policy('ssid', 'wireless/Hostapd', 'validate_ssid');
+        $this->form_validation->set_policy('passphrase', 'wireless/Hostapd', 'validate_wpa_passphrase');
         $this->form_validation->set_policy('mode', 'wireless/Hostapd', 'validate_wpa_key_management');
+        $this->form_validation->set_policy('channel', 'wireless/Hostapd', 'validate_channel');
         $form_ok = $this->form_validation->run();
 
         // Handle form submit
@@ -109,6 +111,9 @@ class Settings extends ClearOS_Controller
         if (($this->input->post('submit') && $form_ok)) {
             try {
                 $this->hostapd->set_ssid($this->input->post('ssid'));
+		$this->hostapd->set_wpa_passphrase($this->input->post('passphrase'));
+		$this->hostapd->set_channel($this->input->post('channel'));
+		$this->hostapd->set_mode($this->input->post('mode'));
                 $this->hostapd->reset(TRUE);
 
                 $this->page->set_status_updated();

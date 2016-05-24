@@ -6,7 +6,7 @@
 
 $app['basename'] = 'wireless';
 $app['version'] = '1.7.0';
-$app['release'] = '2';
+$app['release'] = '3';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
 $app['license'] = 'GPLv3';
@@ -56,4 +56,8 @@ $app['core_directory_manifest'] = array(
 
 $app['core_file_manifest'] = array(
     'hostapd.php'=> array('target' => '/var/clearos/base/daemon/hostapd.php'),
+);
+
+$app['delete_dependency'] = array(
+    'hostapd',
 );

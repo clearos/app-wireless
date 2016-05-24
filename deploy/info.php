@@ -6,7 +6,7 @@
 
 $app['basename'] = 'wireless';
 $app['version'] = '1.7.0';
-$app['release'] = '3';
+$app['release'] = '4';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
 $app['license'] = 'GPLv3';
@@ -60,4 +60,5 @@ $app['core_file_manifest'] = array(
 
 $app['delete_dependency'] = array(
     'hostapd',
+    'app-wireless-core',
 );

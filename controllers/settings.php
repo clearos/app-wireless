@@ -7,7 +7,7 @@
  * @package    wireless
  * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2012 ClearFoundation
+ * @copyright  2016 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/wireless/
  */
@@ -40,7 +40,7 @@
  * @package    wireless
  * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2012 ClearFoundation
+ * @copyright  2016 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/wireless/
  */
@@ -103,6 +103,7 @@ class Settings extends ClearOS_Controller
         $this->form_validation->set_policy('passphrase', 'wireless/Hostapd', 'validate_wpa_passphrase');
         $this->form_validation->set_policy('mode', 'wireless/Hostapd', 'validate_wpa_key_management');
         $this->form_validation->set_policy('channel', 'wireless/Hostapd', 'validate_channel');
+        $this->form_validation->set_policy('interface', 'wireless/Hostapd', 'validate_interface');
         $form_ok = $this->form_validation->run();
 
         // Handle form submit
@@ -113,6 +114,7 @@ class Settings extends ClearOS_Controller
                 $this->hostapd->set_ssid($this->input->post('ssid'));
 		$this->hostapd->set_wpa_passphrase($this->input->post('passphrase'));
 		$this->hostapd->set_channel($this->input->post('channel'));
+		$this->hostapd->set_interface($this->input->post('interface'));
 		$this->hostapd->set_mode($this->input->post('mode'));
                 $this->hostapd->reset(TRUE);
 
@@ -134,6 +136,8 @@ class Settings extends ClearOS_Controller
             $data['modes'] = $this->hostapd->get_modes();
             $data['channel'] = $this->hostapd->get_channel();
             $data['channels'] = $this->hostapd->get_channels();
+            $data['interface'] = $this->hostapd->get_interface();
+            $data['interfaces'] = $this->hostapd->get_interfaces();
             $data['passphrase'] = $this->hostapd->get_wpa_passphrase();
         } catch (Exception $e) {
             $this->page->view_exception($e);

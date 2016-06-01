@@ -7,7 +7,7 @@
  * @package    wireless
  * @subpackage views
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2012 ClearFoundation
+ * @copyright  2016 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/wireless/
  */
@@ -68,7 +68,7 @@ if ($mode === 'WPA-EAP') {
 } else {
     echo field_password('passphrase', $passphrase, lang('wireless_passphrase'), $read_only);
 }
-//echo field_password('passphrase', $passphrase, lang('wireless_passphrase'), $read_only);
+echo field_simple_dropdown('interface', $interfaces, $interface, lang('wireless_interface'), $read_only);
 echo field_simple_dropdown('channel', $channels, $channel, lang('wireless_channel'), $read_only);
 // echo field_dropdown('bridge', $bridges, $bridge, lang('wireless_bridge'), $read_only);
 

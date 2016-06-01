@@ -10,6 +10,7 @@ $lang['wireless_mode'] = 'Mode';
 $lang['wireless_passphrase'] = 'Passphrase';
 $lang['wireless_radius_secret'] = 'RADIUS Shared Secret';
 $lang['wireless_ssid_invalid'] = 'SSID is invalid.';
+$lang['wireless_interface'] = 'Wireless Interface';
 $lang['wireless_ssid'] = 'SSID';
 $lang['wireless_wep'] = 'WEP';
 $lang['wireless_wpa_infrastructure'] = 'WPA Infrastructure';

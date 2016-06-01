@@ -7,7 +7,7 @@
  * @package    wireless
  * @subpackage libraries
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2012 ClearFoundation
+ * @copyright  2016 ClearFoundation
  * @license    http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/wireless/
  */
@@ -60,11 +60,13 @@ use \clearos\apps\base\Configuration_File as Configuration_File;
 use \clearos\apps\base\Daemon as Daemon;
 use \clearos\apps\base\File as File;
 use \clearos\apps\radius\FreeRADIUS as FreeRADIUS;
+use \clearos\apps\network\Iface_Manager as Iface_Manager;
 
 clearos_load_library('base/Configuration_File');
 clearos_load_library('base/Daemon');
 clearos_load_library('base/File');
 clearos_load_library('radius/FreeRADIUS');
+clearos_load_library('network/Iface_Manager');
 
 // Exceptions
 //-----------
@@ -239,6 +241,23 @@ class Hostapd extends Daemon
     }
 
     /**
+     * Returns interface.
+     *
+     * @return string interface
+     * @throws Engine_Exception
+     */
+
+    public function get_interfaces()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+	$interface_list = new Iface_Manager();
+
+	$interfaces = $interface_list->get_wifi_interfaces();
+	return $interfaces;
+    }
+
+    /**
      * Returns wireless mode.
      *
      * Essentially, this returns the wpa_key_mgmt value with a couple 
@@ -342,6 +361,7 @@ class Hostapd extends Daemon
         return $wpa_passphrase;
     }
 
+
     /**
      * Sets channel.
      *
@@ -391,9 +411,18 @@ class Hostapd extends Daemon
      * @throws Engine_Exception, Validation_Exception
      */
 
+//    public function set_interface($interface)
+//    {
+//        clearos_profile(__METHOD__, __LINE__);
+//
+//        $this->_set_parameter('interface', $interface);
+//    }
+
     public function set_interface($interface)
     {
         clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_interface($interface));
 
         $this->_set_parameter('interface', $interface);
     }
@@ -550,9 +579,28 @@ class Hostapd extends Daemon
 
         $supported = $this->get_channels();
 
-        //if (! array_key_exists($channel, $supported))
-        //    return lang('wireless_channel_invalid');
+        if (! array_key_exists($channel, $supported))
+            return lang('wireless_channel_invalid');
     }
+
+    /**
+     * Validation routine for interface.
+     *
+     * @param integer $interface interface
+     *
+     * @return string error message if interface is invalid
+     */
+
+    public function validate_interface($interface)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $supported = $this->get_interfaces();
+
+        //if (! array_key_exists($interface, $supported))
+        //    return lang('wireless_interface_invalid');
+    }
+
 
     /**
      * Validation routine for SSID.

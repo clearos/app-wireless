@@ -2,7 +2,7 @@
 Name: app-wireless
 Epoch: 1
 Version: 1.7.0
-Release: 4%{dist}
+Release: 5%{dist}
 Summary: Wireless Access Point
 License: GPLv3
 Group: ClearOS/Apps

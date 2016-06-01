@@ -6,7 +6,7 @@
 
 $app['basename'] = 'wireless';
 $app['version'] = '1.7.0';
-$app['release'] = '4';
+$app['release'] = '5';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
 $app['license'] = 'GPLv3';

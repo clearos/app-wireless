@@ -1,0 +1,10 @@
+#!/bin/sh
+
+ENABLED=`systemctl is-enabled hostapd 2>/dev/null`
+
+if [ "$ENABLED" == "enabled" ]; then
+
+    logger -p local6.notice -t events "app-wireless - (re)starting hostapd"
+
+    /sbin/service hostapd restart >/dev/null 2>&1
+fi

@@ -1,8 +1,8 @@
 
 Name: app-wireless
 Epoch: 1
-Version: 1.7.0
-Release: 6%{dist}
+Version: 2.3.0
+Release: 1%{dist}
 Summary: Wireless Access Point
 License: GPLv3
 Group: ClearOS/Apps
@@ -24,6 +24,7 @@ Summary: Wireless Access Point - Core
 License: LGPLv3
 Group: ClearOS/Libraries
 Requires: app-base-core
+Requires: app-events-core >= 1:2.3.0
 Requires: app-network-core
 Requires: app-incoming-firewall-core
 Requires: app-radius-core
@@ -46,6 +47,7 @@ cp -r * %{buildroot}/usr/clearos/apps/wireless/
 install -d -m 0755 %{buildroot}/var/clearos/wireless
 install -d -m 0755 %{buildroot}/var/clearos/wireless/backup
 install -D -m 0644 packaging/hostapd.php %{buildroot}/var/clearos/base/daemon/hostapd.php
+install -D -m 0755 packaging/onboot-event %{buildroot}/var/clearos/events/onboot/wireless
 
 %post
 logger -p local6.notice -t installer 'app-wireless - installing'
@@ -90,3 +92,4 @@ exit 0
 /usr/clearos/apps/wireless/language
 /usr/clearos/apps/wireless/libraries
 /var/clearos/base/daemon/hostapd.php
+/var/clearos/events/onboot/wireless

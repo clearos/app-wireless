@@ -5,8 +5,8 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'wireless';
-$app['version'] = '1.7.0';
-$app['release'] = '6';
+$app['version'] = '2.3.0';
+$app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
 $app['license'] = 'GPLv3';
@@ -42,6 +42,7 @@ $app['requires'] = array(
 );
 
 $app['core_requires'] = array(
+    'app-events-core >= 1:2.3.0',
     'app-network-core',
     'app-incoming-firewall-core',
     'app-radius-core',
@@ -56,6 +57,10 @@ $app['core_directory_manifest'] = array(
 
 $app['core_file_manifest'] = array(
     'hostapd.php'=> array('target' => '/var/clearos/base/daemon/hostapd.php'),
+    'onboot-event'=> array(
+        'target' => '/var/clearos/events/onboot/wireless',
+        'mode' => '0755'
+    ),
 );
 
 $app['delete_dependency'] = array(
